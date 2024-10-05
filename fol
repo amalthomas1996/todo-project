@@ -1,0 +1,43 @@
+mern-todo-app/
+├── backend/
+│   ├── controllers/                         # Contains logic for handling requests
+│   │   ├── authController.js                # User authentication (login/signup)
+│   │   ├── projectController.js             # Project-related logic
+│   │   └── todoController.js                # Todo-related logic
+│   ├── models/                              # Contains Mongoose models
+│   │   ├── User.js                          # User model
+│   │   ├── Project.js                       # Project model (includes todos)
+│   ├── routes/                              # Contains API routes
+│   │   ├── authRoutes.js                    # Authentication routes
+│   │   ├── projectRoutes.js                 # Project routes
+│   │   └── todoRoutes.js                    # Todo routes
+│   ├── config/                              # Configuration files
+│   │   ├── db.js                            # Database connection setup
+│   │   └── auth.js                          # JWT configuration
+│   ├── middleware/                          # Middleware for authentication
+│   │   ├── authMiddleware.js                # JWT verification middleware
+│   ├── .env                                 # Environment variables (MongoDB URI, JWT secret)
+│   ├── server.js                            # Main entry point for the backend
+│   └── package.json                         # Backend dependencies and scripts
+└── frontend/
+    ├── public/                              # Public assets
+    │   ├── index.html                       # Main HTML file
+    ├── src/                                 # Main source files
+    │   ├── components/                       # Reusable React components
+    │   │   ├── AuthForm.js                  # Login/Signup form component
+    │   │   ├── ProjectList.js               # List of projects component
+    │   │   ├── TodoList.js                  # List of todos component
+    │   │   ├── ProjectView.js                # Detailed project view component
+    │   ├── pages/                           # Main pages of the application
+    │   │   ├── HomePage.js                  # Home page with projects
+    │   │   ├── LoginPage.js                 # Login page
+    │   │   └── SignupPage.js                # Signup page
+    │   ├── context/                         # Context API for global state management
+    │   │   ├── AuthContext.js               # Authentication context
+    │   │   └── ProjectContext.js            # Project context
+    │   ├── utils/                           # Utility functions
+    │   │   ├── api.js                       # API functions for handling requests
+    │   ├── App.js                           # Main App component
+    │   └── index.js                         # Entry point for React
+    ├── .env                                 # Environment variables (API URL)
+    └── package.json                         # Frontend dependencies and scripts
