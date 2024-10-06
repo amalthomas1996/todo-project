@@ -8,7 +8,13 @@ const ProjectList = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/projects"); // Update this URL based on your API
+      const token = localStorage.getItem("token"); // or however you're storing the token
+
+      const response = await axios.get("http://localhost:5000/api/projects", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProjects(response.data);
     } catch (error) {
       setError("Error fetching projects");
@@ -27,6 +33,12 @@ const ProjectList = () => {
           {error}
         </div>
       )}
+      <Link
+        to="/create-project"
+        className="bg-green-500 text-white px-4 py-2 rounded mt-5 inline-block"
+      >
+        Create New Project
+      </Link>
       <ul>
         {projects.map((project) => (
           <li key={project._id} className="mb-2">
@@ -39,12 +51,6 @@ const ProjectList = () => {
           </li>
         ))}
       </ul>
-      <Link
-        to="/create-project"
-        className="bg-green-500 text-white px-4 py-2 rounded mt-5 inline-block"
-      >
-        Create New Project
-      </Link>
     </div>
   );
 };

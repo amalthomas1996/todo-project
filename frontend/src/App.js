@@ -6,6 +6,7 @@ import ProjectList from './components/Dashboard/ProjectList';
 import ProjectDetails from './components/Dashboard/ProjectDetails';
 import CreateProject from './components/Dashboard/CreateProject';
 import Logout from './components/Auth/Logout';
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
@@ -14,10 +15,10 @@ const App = () => {
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/projects" element={<ProjectList />} />
-          <Route path="/create-project" element={<CreateProject />} />
+
           <Route path="/project/:projectId" element={<ProjectDetails />} />
-          <Route path="/" element={<h2 className="text-center mt-10">Welcome to the To-Do App</h2>} />
+          <Route path="/projectlist" element={<PrivateRoute><ProjectList /></PrivateRoute>} />
+          <Route path="/create-project" element={<CreateProject />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
       </div>

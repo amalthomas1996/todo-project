@@ -1,0 +1,75 @@
+import React from "react";
+import axios from "axios";
+
+const TodoList = ({ todos, onTodoUpdated, setTodoToEdit }) => {
+  const token = localStorage.getItem("token");
+
+  const handleDelete = async (todoId) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Corrected URL - added 'http:'
+      const response = await axios.delete(
+        `http://localhost:5000/api/projects/todos/${todoId}`,
+        config
+      );
+      onTodoUpdated(); // Refresh the todos after deletion
+    } catch (error) {
+      console.error("Failed to delete todo", error);
+    }
+  };
+
+  const handleToggleStatus = async (todo) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      await axios.put(
+        `http://localhost:5000/api/todos/${todo._id}`,
+        { status: !todo.status },
+        config
+      );
+      onTodoUpdated(); // Refresh the todos after updating status
+    } catch (error) {
+      console.error("Failed to update todo status", error);
+    }
+  };
+
+  return (
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo._id} className="flex items-center justify-between mb-2">
+          <span
+            className={`cursor-pointer ${todo.status ? "line-through" : ""}`}
+            onClick={() => handleToggleStatus(todo)}
+          >
+            {todo.description}
+          </span>
+          <div>
+            <button
+              onClick={() => setTodoToEdit(todo)}
+              className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDelete(todo._id)}
+              className="bg-red-500 text-white px-2 py-1 rounded"
+            >
+              Delete
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+export default TodoList;

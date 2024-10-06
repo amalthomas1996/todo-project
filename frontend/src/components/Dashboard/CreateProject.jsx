@@ -5,55 +5,51 @@ import { useNavigate } from "react-router-dom";
 const CreateProject = () => {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    if (!title) {
-      setError("Title is required");
-      return;
-    }
+    setError(""); // Clear any previous error
 
     try {
-      await axios.post("http://localhost:5000/api/projects", { title });
-      setSuccess("Project created successfully");
-      setTitle("");
-      setTimeout(() => {
-        navigate("/projects"); // Redirect to the projects list after creation
-      }, 1000);
+      const token = localStorage.getItem("token"); // Get the token
+      const response = await axios.post(
+        "http://localhost:5000/api/projects",
+        { title },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token
+          },
+        }
+      );
+      navigate(`/project/${response.data._id}`); // Redirect to the new project
     } catch (error) {
-      setError("Failed to create project");
+      setError(
+        "Failed to create project. " + (error.response?.data?.message || "")
+      );
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-5">Create New Project</h2>
+      <h2 className="text-2xl font-bold mb-5">Create Project</h2>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
           {error}
         </div>
       )}
-      {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-          {success}
-        </div>
-      )}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          placeholder="Project Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Project Title"
-          className="border rounded p-2 mb-4 w-full"
+          className="border border-gray-300 px-4 py-2 mb-4 w-full"
+          required
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded"
         >
           Create Project
         </button>
