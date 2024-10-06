@@ -6,10 +6,10 @@ import fileDownload from "js-file-download";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
-  console.log("Project ID:", projectId);
   const [project, setProject] = useState(null);
   const [error, setError] = useState("");
   const [todoToEdit, setTodoToEdit] = useState(null);
+  const [githubToken, setGithubToken] = useState(""); // State to hold GitHub token
 
   const fetchProjectDetails = async () => {
     try {
@@ -18,7 +18,7 @@ const ProjectDetails = () => {
         `http://localhost:5000/api/projects/${projectId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Add the token to the request headers
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -47,16 +47,15 @@ const ProjectDetails = () => {
   const handleDeleteTodo = async (todoId) => {
     try {
       const token = localStorage.getItem("token");
-      // Corrected API URL to include projectId
       await axios.delete(
-        `http://localhost:5000/api/projects/${projectId}/todos/${todoId}`, // Correct URL
+        `http://localhost:5000/api/projects/${projectId}/todos/${todoId}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token for authorization
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      fetchProjectDetails(); // Refresh the project details after deletion
+      fetchProjectDetails();
     } catch (error) {
       console.error("Failed to delete todo", error);
       setError("Failed to delete todo");
@@ -64,21 +63,20 @@ const ProjectDetails = () => {
   };
 
   const handleToggleStatus = async (todo) => {
-    console.log("Toggling status for todo ID:", todo._id); // Log the ID
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5000/api/projects/${projectId}/todos/${todo._id}`, // Correct URL
-        { status: !todo.status }, // Toggle status
+        `http://localhost:5000/api/projects/${projectId}/todos/${todo._id}`,
+        { status: !todo.status },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token for authorization
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      fetchProjectDetails(); // Refresh the project details after toggling status
+      fetchProjectDetails();
     } catch (error) {
-      console.error("Error updating todo status:", error); // Log the error for better debugging
+      console.error("Error updating todo status:", error);
       setError("Failed to update todo status");
     }
   };
@@ -91,8 +89,44 @@ const ProjectDetails = () => {
       )
       .join("\n")}`;
 
-    // Download as markdown file
     fileDownload(markdownContent, `${project.title}_summary.md`);
+  };
+
+  const handleExportGist = async () => {
+    if (!project || !githubToken) return; // Check if project and token are available
+
+    const completedTodos = project.todos.filter((todo) => todo.status);
+    const pendingTodos = project.todos.filter((todo) => !todo.status);
+
+    const markdownContent = `# ${project.title}\n\n## Summary\n${
+      completedTodos.length
+    } / ${project.todos.length} completed.\n\n### Pending Todos\n${pendingTodos
+      .map((todo) => `- [ ] ${todo.description}`)
+      .join("\n")}\n\n### Completed Todos\n${completedTodos
+      .map((todo) => `- [x] ${todo.description}`)
+      .join("\n")}`;
+
+    const gistData = {
+      description: `${project.title} Summary`,
+      files: {
+        [`${project.title}.md`]: {
+          content: markdownContent,
+        },
+      },
+      public: false, // This makes it a secret gist
+    };
+
+    try {
+      await axios.post("https://api.github.com/gists", gistData, {
+        headers: {
+          Authorization: `token ${githubToken}`, // Use the inputted GitHub token
+        },
+      });
+      alert("Gist created successfully!");
+    } catch (error) {
+      console.error("Error creating gist:", error);
+      setError("Failed to create gist");
+    }
   };
 
   if (error) return <div>{error}</div>;
@@ -101,7 +135,7 @@ const ProjectDetails = () => {
     <div className="max-w-3xl mx-auto mt-10">
       {project ? (
         <>
-          <h2 className="text-2xl font-bold mb-5">{project.title}</h2>
+          <h2 className="text-2xl font-bold mb-5">PROJECT: {project.title}</h2>
 
           <TodoForm
             projectId={projectId}
@@ -109,13 +143,6 @@ const ProjectDetails = () => {
             todoToEdit={todoToEdit}
             setTodoToEdit={setTodoToEdit}
           />
-
-          <button
-            onClick={handleExport}
-            className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-          >
-            Export Project Summary
-          </button>
 
           <h3 className="text-xl mt-5">Todos:</h3>
           <ul>
@@ -144,13 +171,12 @@ const ProjectDetails = () => {
                   >
                     Delete
                   </button>
-                  {/* Added a button to mark as completed */}
+
                   <button
                     onClick={() => handleToggleStatus(todo)}
                     className={`${
                       todo.status ? "bg-gray-300" : "bg-blue-500"
                     } text-white px-2 py-1 rounded`}
-                    disabled={false} // Enable the button to allow toggling back to Pending
                   >
                     {todo.status ? "Mark as Pending" : "Mark as Completed"}
                   </button>
@@ -158,6 +184,32 @@ const ProjectDetails = () => {
               </li>
             ))}
           </ul>
+          <button
+            onClick={handleExport}
+            className="bg-green-500 text-white px-4 py-2 rounded mb-4"
+          >
+            Export Project Summary
+          </button>
+          {/* Input for GitHub token */}
+          <div className="mb-4">
+            <label className="block mb-1" htmlFor="githubToken">
+              Enter GitHub Token:
+            </label>
+            <input
+              type="text"
+              id="githubToken"
+              value={githubToken}
+              onChange={(e) => setGithubToken(e.target.value)}
+              className="border rounded px-2 py-1 w-full"
+              placeholder="Enter your GitHub token"
+            />
+          </div>
+          <button
+            onClick={handleExportGist}
+            className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+          >
+            Export as Gist
+          </button>
         </>
       ) : (
         <p>Loading...</p>
