@@ -31,29 +31,33 @@ const CreateProject = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-5">Create Project</h2>
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-          {error}
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Project Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="border border-gray-300 px-4 py-2 mb-4 w-full"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Create Project
-        </button>
-      </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+          Create New Project
+        </h2>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Project Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-green-500 text-white px-4 py-2 rounded-lg w-full mt-4 hover:bg-green-600 transition duration-200"
+          >
+            Create Project
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

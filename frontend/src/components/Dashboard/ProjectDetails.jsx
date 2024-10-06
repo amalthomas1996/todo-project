@@ -132,10 +132,12 @@ const ProjectDetails = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="max-w-3xl mx-auto mt-10">
+    <div className="max-w-3xl mx-auto mt-10 p-5 bg-white shadow-lg rounded-lg">
       {project ? (
         <>
-          <h2 className="text-2xl font-bold mb-5">PROJECT: {project.title}</h2>
+          <h2 className="text-3xl font-bold mb-5 text-gray-800">
+            Project Name: {project.title}
+          </h2>
 
           <TodoForm
             projectId={projectId}
@@ -144,16 +146,18 @@ const ProjectDetails = () => {
             setTodoToEdit={setTodoToEdit}
           />
 
-          <h3 className="text-xl mt-5">Todos:</h3>
-          <ul>
+          <h3 className="text-2xl mt-5 font-semibold text-gray-700">Todos:</h3>
+          <ul className="mt-4">
             {project.todos.map((todo) => (
               <li
                 key={todo._id}
-                className="flex justify-between items-center mb-2"
+                className={`flex justify-between items-center mb-3 p-3 rounded-lg shadow-sm transition ${
+                  todo.status ? "bg-red-200" : "bg-gray-100 hover:bg-gray-200"
+                }`}
               >
                 <span
-                  className={`cursor-pointer ${
-                    todo.status ? "line-through" : ""
+                  className={`cursor-pointer text-lg ${
+                    todo.status ? "line-through text-gray-500" : "text-gray-800"
                   }`}
                 >
                   {todo.description}
@@ -161,22 +165,21 @@ const ProjectDetails = () => {
                 <span className="flex space-x-2">
                   <button
                     onClick={() => handleEditTodo(todo)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded"
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDeleteTodo(todo._id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                   >
                     Delete
                   </button>
-
                   <button
                     onClick={() => handleToggleStatus(todo)}
                     className={`${
                       todo.status ? "bg-gray-300" : "bg-blue-500"
-                    } text-white px-2 py-1 rounded`}
+                    } text-white min-w-[200px] px-3 py-1 rounded hover:bg-blue-600 transition`}
                   >
                     {todo.status ? "Mark as Pending" : "Mark as Completed"}
                   </button>
@@ -186,13 +189,13 @@ const ProjectDetails = () => {
           </ul>
           <button
             onClick={handleExport}
-            className="bg-green-500 text-white px-4 py-2 rounded mb-4"
+            className="bg-green-500 text-white px-4 py-2 rounded mt-4 hover:bg-green-600 transition"
           >
             Export Project Summary
           </button>
           {/* Input for GitHub token */}
-          <div className="mb-4">
-            <label className="block mb-1" htmlFor="githubToken">
+          <div className="mb-4 mt-6">
+            <label className="block mb-1 font-semibold" htmlFor="githubToken">
               Enter GitHub Token:
             </label>
             <input
@@ -200,19 +203,19 @@ const ProjectDetails = () => {
               id="githubToken"
               value={githubToken}
               onChange={(e) => setGithubToken(e.target.value)}
-              className="border rounded px-2 py-1 w-full"
+              className="border rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="Enter your GitHub token"
             />
           </div>
           <button
             onClick={handleExportGist}
-            className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           >
             Export as Gist
           </button>
         </>
       ) : (
-        <p>Loading...</p>
+        <p className="text-center">Loading...</p>
       )}
     </div>
   );

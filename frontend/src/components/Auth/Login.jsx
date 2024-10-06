@@ -8,6 +8,8 @@ const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const navigate = useNavigate(); // Use the useNavigate hook for navigation
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -24,41 +26,72 @@ const Login = () => {
       // Save the token in local storage
       localStorage.setItem("token", response.data.token);
       setSuccess("Login successful!");
-      window.location.href = "/projectlist";
+      window.location.href = "/projectlist"; // Redirect to project list
     } catch (error) {
       setError(error.response?.data?.message || "Login failed.");
     }
   };
 
+  const handleSignupRedirect = () => {
+    navigate("/signup"); // Redirect to the signup page
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-5">Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 mb-2 w-full"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 mb-2 w-full"
-          required
-        />
-        {error && <div className="text-red-500 mb-2">{error}</div>}
-        {success && <div className="text-green-500 mb-2">{success}</div>}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded-lg p-8 max-w-sm w-full">
+        <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">
           Login
-        </button>
-      </form>
+        </h2>
+
+        {/* Alert Messages */}
+        {error && (
+          <div className="bg-red-100 text-red-700 border border-red-400 rounded-lg p-2 mb-4 text-center">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="bg-green-100 text-green-700 border border-green-400 rounded-lg p-2 mb-4 text-center">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition duration-200"
+          >
+            Login
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <button
+            onClick={handleSignupRedirect}
+            className="text-blue-500 underline hover:text-blue-600 transition duration-200"
+          >
+            Don't have an account? Sign Up
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
