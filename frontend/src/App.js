@@ -7,6 +7,7 @@ import ProjectDetails from './components/Dashboard/ProjectDetails';
 import CreateProject from './components/Dashboard/CreateProject';
 import Logout from './components/Auth/Logout';
 import PrivateRoute from "./components/PrivateRoute";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const isAuthenticated = !!localStorage.getItem("token"); // Check if the user is authenticated
@@ -14,6 +15,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
+        <Navbar />
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />

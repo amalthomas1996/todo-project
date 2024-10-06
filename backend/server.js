@@ -16,9 +16,7 @@ app.use(cors());
 app.use(express.json()); // To parse JSON requests
 
 app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes); // Ensure this route is registered
-
-// This route handles todo related requests correctly
+app.use('/api/projects', projectRoutes);
 app.use('/api/projects/:projectId/todos', todoRoutes);
 
 // Database connection

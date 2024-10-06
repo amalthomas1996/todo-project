@@ -47,3 +47,31 @@ exports.getProject = async (req, res) => {
     res.status(500).json({ message: "Error fetching project." });
   }
 };
+
+exports.updateProjectTitle = async (req, res) => {
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ message: "Title is required." });
+  }
+
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found." });
+    }
+
+    if (project.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to update this project." });
+    }
+
+    project.title = title; // Update the title
+    await project.save();
+
+    res.status(200).json({ message: "Project renamed successfully", project });
+  } catch (error) {
+    console.error("Error updating project title:", error);
+    res.status(500).json({ message: "Error updating project title." });
+  }
+};

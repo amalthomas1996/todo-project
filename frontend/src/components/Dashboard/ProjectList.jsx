@@ -27,7 +27,7 @@ const ProjectList = () => {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 p-5 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-5 text-gray-800">Projects</h2>
+      <h2 className="text-2xl font-bold mb-5 text-gray-800">PROJECTS</h2>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
           {error}
@@ -47,9 +47,11 @@ const ProjectList = () => {
           >
             <div className="flex flex-col justify-between h-full">
               <div>
-                <h3 className="text-lg font-semibold text-blue-600 mb-1">
-                  {project.title}
+                <h3 className="text-m font-semibold mb-1">
+                  <span className="text-black">Project Name:</span>{" "}
+                  <span className="text-blue-600">{project.title}</span>
                 </h3>
+
                 <p className="text-gray-500 text-sm mb-4">
                   Created on: {new Date(project.createdAt).toLocaleDateString()}
                 </p>

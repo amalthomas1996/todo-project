@@ -10,6 +10,8 @@ const ProjectDetails = () => {
   const [error, setError] = useState("");
   const [todoToEdit, setTodoToEdit] = useState(null);
   const [githubToken, setGithubToken] = useState(""); // State to hold GitHub token
+  const [newProjectName, setNewProjectName] = useState(""); // State for new project name
+  const [isEditingName, setIsEditingName] = useState(false); // State to toggle editing
 
   const fetchProjectDetails = async () => {
     try {
@@ -23,6 +25,7 @@ const ProjectDetails = () => {
         }
       );
       setProject(response.data);
+      setNewProjectName(response.data.title); // Set initial project name for editing
     } catch (error) {
       console.error(
         "Error fetching project details:",
@@ -129,15 +132,62 @@ const ProjectDetails = () => {
     }
   };
 
+  const handleRenameProject = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5000/api/projects/${projectId}`,
+        { title: newProjectName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      fetchProjectDetails(); // Refresh project details after renaming
+      setIsEditingName(false); // Exit editing mode
+    } catch (error) {
+      console.error("Error renaming project:", error);
+      setError("Failed to rename project");
+    }
+  };
+
   if (error) return <div>{error}</div>;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-5 bg-white shadow-lg rounded-lg">
       {project ? (
         <>
-          <h2 className="text-3xl font-bold mb-5 text-gray-800">
-            Project Name: {project.title}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold mb-5 text-gray-800">
+              Project Name:
+              {isEditingName ? (
+                <input
+                  type="text"
+                  value={newProjectName}
+                  onChange={(e) => setNewProjectName(e.target.value)}
+                  className="border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 ml-2"
+                />
+              ) : (
+                <span className="ml-2">{project.title}</span>
+              )}
+            </h2>
+            {isEditingName ? (
+              <button
+                onClick={handleRenameProject}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 shadow-md"
+              >
+                Save
+              </button>
+            ) : (
+              <span
+                onClick={() => setIsEditingName(true)}
+                className="cursor-pointer text-gray-500 hover:text-gray-700 ml-2"
+              >
+                ✏️ {/* You can replace this with an icon component */}
+              </span>
+            )}
+          </div>
 
           <TodoForm
             projectId={projectId}
@@ -215,7 +265,7 @@ const ProjectDetails = () => {
           </button>
         </>
       ) : (
-        <p className="text-center">Loading...</p>
+        <p>Loading project details...</p>
       )}
     </div>
   );
