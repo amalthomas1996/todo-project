@@ -12,6 +12,7 @@ const ProjectDetails = () => {
   const [githubToken, setGithubToken] = useState(""); // State to hold GitHub token
   const [newProjectName, setNewProjectName] = useState(""); // State for new project name
   const [isEditingName, setIsEditingName] = useState(false); // State to toggle editing
+  const [message, setMessage] = useState(""); // State for messages
 
   const fetchProjectDetails = async () => {
     try {
@@ -41,10 +42,12 @@ const ProjectDetails = () => {
 
   const handleTodoAdded = () => {
     fetchProjectDetails(); // Refresh the project details after adding/updating a todo
+    setMessage("Todo added successfully!"); // Set success message
   };
 
   const handleEditTodo = (todo) => {
     setTodoToEdit(todo);
+    setMessage(""); // Clear message when editing
   };
 
   const handleDeleteTodo = async (todoId) => {
@@ -59,6 +62,7 @@ const ProjectDetails = () => {
         }
       );
       fetchProjectDetails();
+      setMessage("Todo deleted successfully!"); // Set success message
     } catch (error) {
       console.error("Failed to delete todo", error);
       setError("Failed to delete todo");
@@ -78,6 +82,7 @@ const ProjectDetails = () => {
         }
       );
       fetchProjectDetails();
+      setMessage("Todo status updated successfully!"); // Set success message
     } catch (error) {
       console.error("Error updating todo status:", error);
       setError("Failed to update todo status");
@@ -93,6 +98,7 @@ const ProjectDetails = () => {
       .join("\n")}`;
 
     fileDownload(markdownContent, `${project.title}_summary.md`);
+    setMessage("Project summary exported successfully!"); // Set success message
   };
 
   const handleExportGist = async () => {
@@ -125,7 +131,7 @@ const ProjectDetails = () => {
           Authorization: `token ${githubToken}`, // Use the inputted GitHub token
         },
       });
-      alert("Gist created successfully!");
+      setMessage("Gist created successfully!"); // Set success message
     } catch (error) {
       console.error("Error creating gist:", error);
       setError("Failed to create gist");
@@ -146,6 +152,7 @@ const ProjectDetails = () => {
       );
       fetchProjectDetails(); // Refresh project details after renaming
       setIsEditingName(false); // Exit editing mode
+      setMessage("Project renamed successfully!"); // Set success message
     } catch (error) {
       console.error("Error renaming project:", error);
       setError("Failed to rename project");
@@ -156,6 +163,11 @@ const ProjectDetails = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-5 bg-white shadow-lg rounded-lg">
+      {message && (
+        <div className="mb-4 p-2 bg-green-100 text-green-800 border border-green-400 rounded">
+          {message}
+        </div>
+      )}
       {project ? (
         <>
           <div className="flex items-center justify-between">

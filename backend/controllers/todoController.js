@@ -60,7 +60,7 @@ exports.deleteTodo = async (req, res) => {
   const { todoId } = req.params;
 
   try {
-    console.log("TodoId received: ", todoId); // Log todoId for debugging
+    //console.log("TodoId : ", todoId); 
 
     const project = await Project.findOne({ "todos._id": todoId });
 
@@ -69,7 +69,7 @@ exports.deleteTodo = async (req, res) => {
       return res.status(404).json({ message: "Project or Todo not found." });
     }
 
-    console.log("Project found: ", project.title); // Log project
+    // console.log("Project found: ", project.title); 
 
     // Use the `id` method to find the todo and remove it
     const todo = project.todos.id(todoId);
@@ -84,7 +84,7 @@ exports.deleteTodo = async (req, res) => {
     // Attempt to save the project after removing the todo
     await project.save();
 
-    console.log("Todo deleted successfully.");
+    //console.log("Todo deleted successfully.");
     res.status(200).json({ message: "Todo deleted successfully." });
   } catch (error) {
     console.error("Error deleting todo:", error.message);

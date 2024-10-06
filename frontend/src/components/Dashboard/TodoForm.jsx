@@ -3,7 +3,6 @@ import axios from "axios";
 
 const TodoForm = ({ projectId, onTodoAdded, todoToEdit, setTodoToEdit }) => {
   const [description, setDescription] = useState("");
-  //console.log("Project ID:", projectId);
 
   useEffect(() => {
     if (todoToEdit) {
@@ -12,6 +11,7 @@ const TodoForm = ({ projectId, onTodoAdded, todoToEdit, setTodoToEdit }) => {
       setDescription("");
     }
   }, [todoToEdit]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -49,18 +49,18 @@ const TodoForm = ({ projectId, onTodoAdded, todoToEdit, setTodoToEdit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <form onSubmit={handleSubmit} className="mb-4 flex items-center">
       <input
         type="text"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         required
         placeholder="Todo description"
-        className="border rounded px-2 py-1"
+        className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
       />
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg ml-2 hover:bg-blue-700 transition duration-200 ease-in-out"
       >
         {todoToEdit ? "Update Todo" : "Add Todo"}
       </button>

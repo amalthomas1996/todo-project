@@ -3,8 +3,8 @@ const { addTodo, updateTodo, deleteTodo } = require('../controllers/todoControll
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router({ mergeParams: true });
 
-router.post('/:id/todos', protect, addTodo);  // Create a new todo
-router.put('/:todoId', protect, updateTodo); // Update a todo (description or status)
-router.delete('/:todoId', protect, deleteTodo); // Delete a todo
+router.post('/:id/todos', protect, addTodo);
+router.put('/:todoId', protect, updateTodo);
+router.delete('/:todoId', protect, deleteTodo);
 
 module.exports = router;

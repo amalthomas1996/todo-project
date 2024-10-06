@@ -14,12 +14,12 @@ const Navbar = () => {
     <nav className="bg-gray-800 text-white shadow-md py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
         <Link
-          to="/"
+          to="#"
           className="text-2xl font-bold text-white hover:text-blue-300"
         >
           My To-Do App
         </Link>
-        {token ? ( // Conditionally render if user is logged in
+        {token ? (
           <ul className="flex space-x-6">
             <li>
               <Link
